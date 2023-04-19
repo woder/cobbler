@@ -2,7 +2,7 @@
 Test module that asserts that generic Cobbler Item functionallity is working as expected.
 """
 import os
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Type
 
 import pytest
 
@@ -48,10 +48,10 @@ def test_make_clone(cobbler_api: CobblerAPI):
 
 
 def test_from_dict(
-    cobbler_api: CobblerAPI,
-    create_kernel_initrd: Callable[[str, str], str],
-    fk_kernel: str,
-    fk_initrd: str,
+        cobbler_api: CobblerAPI,
+        create_kernel_initrd: Callable[[str, str], str],
+        fk_kernel: str,
+        fk_initrd: str,
 ):
     """
     Assert that an abstract Cobbler Item can be loaded from dict.
@@ -129,11 +129,11 @@ def test_item_descendants(cobbler_api: CobblerAPI):
 
 
 def test_descendants(
-    cobbler_api: CobblerAPI,
-    create_distro: Callable[[], Distro],
-    create_image: Callable[[], Image],
-    create_profile: Callable[[str, str], Profile],
-    create_system: Callable[[str, str], System],
+        cobbler_api: CobblerAPI,
+        create_distro: Callable[[], Distro],
+        create_image: Callable[[], Image],
+        create_profile: Callable[[str, str], Profile],
+        create_system: Callable[[str, str], System],
 ):
     """
     Assert that the decendants property is also working with an enabled Cache.
@@ -238,10 +238,10 @@ def test_descendants(
 
 
 def test_get_conceptual_parent(
-    request: "pytest.FixtureRequest",
-    cobbler_api: CobblerAPI,
-    create_distro: Callable[[], Distro],
-    create_profile: Callable[[str], Profile],
+        request: "pytest.FixtureRequest",
+        cobbler_api: CobblerAPI,
+        create_distro: Callable[[], Distro],
+        create_profile: Callable[[str], Profile],
 ):
     """
     Assert that retrieving the conceptual parent is working as expected.
@@ -302,10 +302,10 @@ def test_comment(cobbler_api: CobblerAPI):
     ],
 )
 def test_owners(
-    cobbler_api: CobblerAPI,
-    input_owners: Any,
-    expected_exception: Any,
-    expected_result: Optional[List[str]],
+        cobbler_api: CobblerAPI,
+        input_owners: Any,
+        expected_exception: Any,
+        expected_result: Optional[List[str]],
 ):
     """
     Assert that an abstract Cobbler Item can use the Getter and Setter of the owners property correctly.
@@ -329,10 +329,10 @@ def test_owners(
     ],
 )
 def test_kernel_options(
-    cobbler_api: CobblerAPI,
-    input_kernel_options: Any,
-    expected_exception: Any,
-    expected_result: Optional[Dict[Any, Any]],
+        cobbler_api: CobblerAPI,
+        input_kernel_options: Any,
+        expected_exception: Any,
+        expected_result: Optional[Dict[Any, Any]],
 ):
     """
     Assert that an abstract Cobbler Item can use the Getter and Setter of the kernel_options property correctly.
@@ -356,10 +356,10 @@ def test_kernel_options(
     ],
 )
 def test_kernel_options_post(
-    cobbler_api: CobblerAPI,
-    input_kernel_options: Any,
-    expected_exception: Any,
-    expected_result: Optional[Dict[Any, Any]],
+        cobbler_api: CobblerAPI,
+        input_kernel_options: Any,
+        expected_exception: Any,
+        expected_result: Optional[Dict[Any, Any]],
 ):
     """
     Assert that an abstract Cobbler Item can use the Getter and Setter of the kernel_options_post property correctly.
@@ -383,10 +383,10 @@ def test_kernel_options_post(
     ],
 )
 def test_autoinstall_meta(
-    cobbler_api: CobblerAPI,
-    input_autoinstall_meta: Any,
-    expected_exception: Any,
-    expected_result: Optional[Dict[Any, Any]],
+        cobbler_api: CobblerAPI,
+        input_autoinstall_meta: Any,
+        expected_exception: Any,
+        expected_result: Optional[Dict[Any, Any]],
 ):
     """
     Assert that an abstract Cobbler Item can use the Getter and Setter of the autoinstall_meta property correctly.
@@ -413,10 +413,10 @@ def test_autoinstall_meta(
     ],
 )
 def test_mgmt_classes(
-    create_distro: Callable[[], Distro],
-    input_mgmt_classes: Any,
-    expected_exception: Any,
-    expected_result: Optional[List[Any]],
+        create_distro: Callable[[], Distro],
+        input_mgmt_classes: Any,
+        expected_exception: Any,
+        expected_result: Optional[List[Any]],
 ):
     """
     Assert that an abstract Cobbler Item can use the Getter and Setter of the mgmt_classes property correctly.
@@ -444,10 +444,10 @@ def test_mgmt_classes(
     ],
 )
 def test_mgmt_parameters(
-    cobbler_api: CobblerAPI,
-    input_mgmt_parameters: Any,
-    expected_exception: Any,
-    expected_result: Dict[str, Any],
+        cobbler_api: CobblerAPI,
+        input_mgmt_parameters: Any,
+        expected_exception: Any,
+        expected_result: Dict[str, Any],
 ):
     """
     Assert that an abstract Cobbler Item can use the Getter and Setter of the mgmt_parameters property correctly.
@@ -524,19 +524,34 @@ def test_sort_key(request: "pytest.FixtureRequest", cobbler_api: CobblerAPI):
     ]
 
 
-@pytest.mark.skip("Test not yet implemented")
-def test_find_match(cobbler_api: CobblerAPI):
+@pytest.mark.parametrize(
+    "in_keys, check_keys, expect_match",
+    [
+        ({"uid": "test-uid"}, {"uid": "test-uid"}, True),
+        ({"menu": "test-menu"}, {"menu": "test-menu"}, True),
+        ({"ctime": 0}, {"ctime": 0}, True),
+        ({"name": "test-object"}, {"name": "test-object"}, True),
+        ({"comment": "test-comment"}, {"comment": "test-comment"}, True),
+        ({"menu": "test-menu"}, {"menu": ""}, False),
+        ({"uid": "test-uid"}, {"uid": ""}, False),
+    ],
+)
+def test_find_match(
+        cobbler_api: CobblerAPI,
+        in_keys: Dict[str, Any],
+        check_keys: Dict[str, Any],
+        expect_match: bool):
     """
     Assert that given a desired amount of key-value pairs is matching the item or not.
     """
     # Arrange
-    titem = Item(cobbler_api)
+    titem = Item(cobbler_api, **in_keys)
 
     # Act
-    titem.find_match({})
+    result = titem.find_match(check_keys)
 
     # Assert
-    assert False
+    assert result == expect_match
 
 
 @pytest.mark.skip("Test not yet implemented")
@@ -579,10 +594,10 @@ def test_dump_vars(cobbler_api: CobblerAPI):
     ],
 )
 def test_depth(
-    cobbler_api: CobblerAPI,
-    input_depth: Any,
-    expected_exception: Any,
-    expected_result: Optional[int],
+        cobbler_api: CobblerAPI,
+        input_depth: Any,
+        expected_exception: Any,
+        expected_result: Optional[int],
 ):
     """
     Assert that an abstract Cobbler Item can use the Getter and Setter of the depth property correctly.
@@ -603,10 +618,10 @@ def test_depth(
     [("", pytest.raises(TypeError), None), (0.0, does_not_raise(), 0.0)],
 )
 def test_ctime(
-    cobbler_api: CobblerAPI,
-    input_ctime: Any,
-    expected_exception: Any,
-    expected_result: float,
+        cobbler_api: CobblerAPI,
+        input_ctime: Any,
+        expected_exception: Any,
+        expected_result: float,
 ):
     """
     Assert that an abstract Cobbler Item can use the Getter and Setter of the ctime property correctly.
