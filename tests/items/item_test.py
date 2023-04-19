@@ -525,37 +525,62 @@ def test_sort_key(request: "pytest.FixtureRequest", cobbler_api: CobblerAPI):
 
 
 @pytest.mark.parametrize(
-    "in_keys, check_keys, expect_match",
+    "in_keys, check_keys, expect_match, create_mocks",
     [
-        ({"uid": "test-uid"}, {"uid": "test-uid"}, True),
-        ({"menu": "test-menu"}, {"menu": "test-menu"}, True),
-        ({"ctime": 0}, {"ctime": 0}, True),
-        ({"name": "test-object"}, {"name": "test-object"}, True),
-        ({"comment": "test-comment"}, {"comment": "test-comment"}, True),
-        ({"menu": "test-menu"}, {"menu": ""}, False),
-        ({"uid": "test-uid"}, {"uid": ""}, False),
+        ({"uid": "test-uid"}, {"uid": "test-uid"}, True, None),
+        ({"menu": "testmenu0"}, {"menu": "testmenu0"}, True, ["create_menu"]),
+        ({"ctime": 0.0}, {"ctime": 0.0}, True, None),
+        ({"name": "test-object"}, {"name": "test-object"}, True, None),
+        ({"comment": "test-comment"}, {"comment": "test-comment"}, True, None),
+        ({"menu": "testmenu0"}, {"menu": ""}, False, ["create_menu"]),
+        ({"uid": "test-uid"}, {"uid": ""}, False, None),
     ],
 )
 def test_find_match(
+        request: "pytest.FixtureRequest",
+        create_menu,
         cobbler_api: CobblerAPI,
         in_keys: Dict[str, Any],
         check_keys: Dict[str, Any],
+        create_mocks: Optional[List[str]],
         expect_match: bool):
     """
     Assert that given a desired amount of key-value pairs is matching the item or not.
     """
     # Arrange
+    if create_mocks:
+        for mock in create_mocks:
+            mock_generator = request.getfixturevalue(mock)
+            if mock_generator:
+                mock_generator()
+
     titem = Item(cobbler_api, **in_keys)
 
     # Act
     result = titem.find_match(check_keys)
 
     # Assert
-    assert result == expect_match
+    assert expect_match == result
 
 
-@pytest.mark.skip("Test not yet implemented")
-def test_find_match_single_key(cobbler_api: CobblerAPI):
+@pytest.mark.parametrize(
+    "data_keys, check_key, check_value, expect_match",
+    [
+        ({"uid": "test-uid"}, "uid", "test-uid", True),
+        ({"menu": "testmenu0"}, "menu", "testmenu0", True),
+        ({"ctime": 0.0}, "ctime", 0.0, True),
+        ({"depth": 1}, "depth", 1, True),
+        ({"ctime": 0.0, "uid": "test", "name": "test-name"}, "ctime", 0.0, True),
+        ({"depth": 1}, "name", "test", False),
+        ({"ctime": 0.0, "uid": "test", "name": "test-name"}, "menu", "testmenu0", True),
+    ],
+)
+def test_find_match_single_key(
+        cobbler_api: CobblerAPI,
+        data_keys: Dict[str, Any],
+        check_key: str,
+        check_value: Any,
+        expect_match: bool):
     """
     Assert that a single given key and value match the object or not.
     """
@@ -563,10 +588,10 @@ def test_find_match_single_key(cobbler_api: CobblerAPI):
     titem = Item(cobbler_api)
 
     # Act
-    titem.find_match_single_key({}, "", "")
+    result = titem.find_match_single_key(data_keys, check_key, check_value)
 
     # Assert
-    assert False
+    assert expect_match == result
 
 
 def test_dump_vars(cobbler_api: CobblerAPI):
