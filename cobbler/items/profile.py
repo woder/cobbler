@@ -137,7 +137,10 @@ class Profile(item.Item):
         """
         # special case for profile, since arch is a derived property from the parent distro
         if key == 'arch':
-            return self.arch.value == value
+            if self.arch:
+                return self.arch.value == value
+            else:
+                return value is None
         else:
             return super().find_match_single_key(data, key, value, no_errors)
 
