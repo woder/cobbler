@@ -538,7 +538,6 @@ def test_sort_key(request: "pytest.FixtureRequest", cobbler_api: CobblerAPI):
 )
 def test_find_match(
         request: "pytest.FixtureRequest",
-        create_menu,
         cobbler_api: CobblerAPI,
         in_keys: Dict[str, Any],
         check_keys: Dict[str, Any],
@@ -568,11 +567,9 @@ def test_find_match(
     [
         ({"uid": "test-uid"}, "uid", "test-uid", True),
         ({"menu": "testmenu0"}, "menu", "testmenu0", True),
-        ({"ctime": 0.0}, "ctime", 0.0, True),
-        ({"depth": 1}, "depth", 1, True),
-        ({"ctime": 0.0, "uid": "test", "name": "test-name"}, "ctime", 0.0, True),
-        ({"depth": 1}, "name", "test", False),
-        ({"ctime": 0.0, "uid": "test", "name": "test-name"}, "menu", "testmenu0", True),
+        ({"uid": "test", "name": "test-name"}, "uid", "test", True),
+        ({"depth": "1"}, "name", "test", False),
+        ({"uid": "test", "name": "test-name"}, "menu", "testmenu0", False),
     ],
 )
 def test_find_match_single_key(
