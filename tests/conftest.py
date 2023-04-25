@@ -14,6 +14,7 @@ import pytest
 from cobbler.api import CobblerAPI
 from cobbler.items.distro import Distro
 from cobbler.items.image import Image
+from cobbler.items.menu import Menu
 from cobbler.items.profile import Profile
 from cobbler.items.system import NetworkInterface, System
 
@@ -104,11 +105,11 @@ def create_kernel_initrd(create_testfile: Callable[[str], None]):
 
 @pytest.fixture(scope="function")
 def create_distro(
-    request: "pytest.FixtureRequest",
-    cobbler_api: CobblerAPI,
-    create_kernel_initrd: Callable[[str, str], str],
-    fk_kernel: str,
-    fk_initrd: str,
+        request: "pytest.FixtureRequest",
+        cobbler_api: CobblerAPI,
+        create_kernel_initrd: Callable[[str, str], str],
+        fk_kernel: str,
+        fk_initrd: str,
 ):
     """
     Returns a function which has the distro name as an argument. The function returns a distro object. The distro is
@@ -141,7 +142,7 @@ def create_profile(request: "pytest.FixtureRequest", cobbler_api: CobblerAPI):
     """
 
     def _create_profile(
-        distro_name: str = "", profile_name: str = "", name: str = ""
+            distro_name: str = "", profile_name: str = "", name: str = ""
     ) -> Profile:
         test_profile = cobbler_api.new_profile()
         test_profile.name = (
@@ -191,7 +192,7 @@ def create_system(request: "pytest.FixtureRequest", cobbler_api: CobblerAPI):
     """
 
     def _create_system(
-        profile_name: str = "", image_name: str = "", name: str = ""
+            profile_name: str = "", image_name: str = "", name: str = ""
     ) -> System:
         test_system = cobbler_api.new_system()
         if name == "":
@@ -211,6 +212,33 @@ def create_system(request: "pytest.FixtureRequest", cobbler_api: CobblerAPI):
         return test_system
 
     return _create_system
+
+
+@pytest.fixture(scope="function")
+def create_menu(request: "pytest.FixtureRequest", cobbler_api: CobblerAPI):
+    """
+    Returns a function which has the profile name as an argument. The function returns a system object. The system is
+    already added to the CobblerAPI.
+    """
+
+    def _create_menu(
+            name: str = "", display_name: str = ""
+    ) -> Menu:
+        test_menu = cobbler_api.new_menu()
+
+        if name == "":
+            test_menu.name = (
+                request.node.originalname  # type: ignore
+                if request.node.originalname  # type: ignore
+                else request.node.name
+            )
+
+        test_menu.display_name = display_name
+
+        cobbler_api.add_menu(test_menu)
+        return test_menu
+
+    return _create_menu
 
 
 @pytest.fixture(scope="function", autouse=True)
