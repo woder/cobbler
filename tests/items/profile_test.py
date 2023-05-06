@@ -2,7 +2,7 @@
 Test module to validate the functionallity of the Cobbler Profile item.
 """
 
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Dict
 
 import pytest
 
@@ -44,8 +44,8 @@ def test_make_clone(cobbler_api: CobblerAPI):
 
 
 def test_to_dict(
-    create_distro: Callable[[str], Distro],
-    create_profile: Callable[[str, str, str], Profile],
+        create_distro: Callable[[str], Distro],
+        create_profile: Callable[[str, str, str], Profile],
 ):
     """
     Assert that the Profile can be successfully converted to a dictionary.
@@ -64,7 +64,7 @@ def test_to_dict(
 
 
 def test_to_dict_resolved(
-    cobbler_api: CobblerAPI, create_distro: Callable[[str], Distro]
+        cobbler_api: CobblerAPI, create_distro: Callable[[str], Distro]
 ):
     """
     Assert that the Profile can be successfully converted to a dictionary with resolved values.
@@ -107,9 +107,9 @@ def test_parent_empty(cobbler_api: CobblerAPI):
 
 
 def test_parent_profile(
-    cobbler_api: CobblerAPI,
-    create_distro: Callable[[str], Distro],
-    create_profile: Callable[[str, str, str], Profile],
+        cobbler_api: CobblerAPI,
+        create_distro: Callable[[str], Distro],
+        create_profile: Callable[[str, str, str], Profile],
 ):
     """
     Assert that if the parent is set via a parent profile name the correct object is returned.
@@ -127,7 +127,7 @@ def test_parent_profile(
 
 
 def test_parent_other_object_type(
-    cobbler_api: CobblerAPI, create_image: Callable[[str], Image]
+        cobbler_api: CobblerAPI, create_image: Callable[[str], Image]
 ):
     """
     Assert that if an invalid item type is set as a parent, the setter is raising a CobblerException.
@@ -286,10 +286,10 @@ def test_dhcp_tag(cobbler_api: CobblerAPI):
     ],
 )
 def test_server(
-    cobbler_api: CobblerAPI,
-    input_server: Any,
-    expected_exception: Any,
-    expected_result: str,
+        cobbler_api: CobblerAPI,
+        input_server: Any,
+        expected_exception: Any,
+        expected_result: str,
 ):
     """
     Assert that a Cobbler Profile can use the Getter and Setter of the server property correctly.
@@ -346,13 +346,13 @@ def test_next_server_v6(cobbler_api: CobblerAPI):
     ],
 )
 def test_filename(
-    cobbler_api: CobblerAPI,
-    create_distro: Callable[[str], Distro],
-    create_profile: Callable[[str, str, str], Profile],
-    input_filename: Any,
-    expected_result: str,
-    is_subitem: bool,
-    expected_exception: Any,
+        cobbler_api: CobblerAPI,
+        create_distro: Callable[[str], Distro],
+        create_profile: Callable[[str, str, str], Profile],
+        input_filename: Any,
+        expected_result: str,
+        is_subitem: bool,
+        expected_exception: Any,
 ):
     """
     Assert that a Cobbler Profile can use the Getter and Setter of the filename property correctly.
@@ -398,7 +398,7 @@ def test_autoinstall(cobbler_api: CobblerAPI):
     ],
 )
 def test_virt_auto_boot(
-    cobbler_api: CobblerAPI, value: Any, expected_exception: Any, expected_result: bool
+        cobbler_api: CobblerAPI, value: Any, expected_exception: Any, expected_result: bool
 ):
     """
     Assert that a Cobbler Profile can use the Getter and Setter of the virt_auto_boot property correctly.
@@ -426,7 +426,7 @@ def test_virt_auto_boot(
     ],
 )
 def test_virt_cpus(
-    cobbler_api: CobblerAPI, value: Any, expected_exception: Any, expected_result: int
+        cobbler_api: CobblerAPI, value: Any, expected_exception: Any, expected_result: int
 ):
     """
     Assert that a Cobbler Profile can use the Getter and Setter of the virt_cpus property correctly.
@@ -454,7 +454,7 @@ def test_virt_cpus(
     ],
 )
 def test_virt_file_size(
-    cobbler_api: CobblerAPI, value: Any, expected_exception: Any, expected_result: Any
+        cobbler_api: CobblerAPI, value: Any, expected_exception: Any, expected_result: Any
 ):
     """
     Assert that a Cobbler Profile can use the Getter and Setter of the virt_file_size property correctly.
@@ -481,7 +481,7 @@ def test_virt_file_size(
     ],
 )
 def test_virt_disk_driver(
-    cobbler_api: CobblerAPI, value: Any, expected_exception: Any, expected_result: Any
+        cobbler_api: CobblerAPI, value: Any, expected_exception: Any, expected_result: Any
 ):
     """
     Assert that a Cobbler Profile can use the Getter and Setter of the virt_disk_driver property correctly.
@@ -507,7 +507,7 @@ def test_virt_disk_driver(
     ],
 )
 def test_virt_ram(
-    cobbler_api: CobblerAPI, value: Any, expected_exception: Any, expected_result: Any
+        cobbler_api: CobblerAPI, value: Any, expected_exception: Any, expected_result: Any
 ):
     """
     Assert that a Cobbler Profile can use the Getter and Setter of the virt_ram property correctly.
@@ -534,10 +534,10 @@ def test_virt_ram(
     ],
 )
 def test_virt_type(
-    cobbler_api: CobblerAPI,
-    value: Any,
-    expected_exception: Any,
-    expected_result: Any,
+        cobbler_api: CobblerAPI,
+        value: Any,
+        expected_exception: Any,
+        expected_result: Any,
 ):
     """
     Assert that a Cobbler Profile can use the Getter and Setter of the virt_type property correctly.
@@ -563,10 +563,10 @@ def test_virt_type(
     ],
 )
 def test_virt_bridge(
-    cobbler_api: CobblerAPI,
-    value: Any,
-    expected_exception: Any,
-    expected_result: Any,
+        cobbler_api: CobblerAPI,
+        value: Any,
+        expected_exception: Any,
+        expected_result: Any,
 ):
     """
     Assert that a Cobbler Profile can use the Getter and Setter of the virt_bridge property correctly.
@@ -636,11 +636,11 @@ def test_redhat_management_key(cobbler_api: CobblerAPI):
     ],
 )
 def test_boot_loaders(
-    cobbler_api: CobblerAPI,
-    create_distro: Callable[[str], Distro],
-    input_boot_loaders: Any,
-    expected_result: List[str],
-    expected_exception: Any,
+        cobbler_api: CobblerAPI,
+        create_distro: Callable[[str], Distro],
+        input_boot_loaders: Any,
+        expected_result: List[str],
+        expected_exception: Any,
 ):
     """
     Assert that a Cobbler Profile can resolve the boot loaders it has available successfully.
@@ -684,3 +684,38 @@ def test_display_name(cobbler_api: CobblerAPI):
 
     # Assert
     assert profile.display_name == ""
+
+
+@pytest.mark.parametrize(
+    "data_keys, check_key, check_value, expect_match",
+    [
+        ({"uid": "test-uid"}, "uid", "test-uid", True),
+        ({"menu": "testmenu0"}, "menu", "testmenu0", True),
+        ({"uid": "test", "name": "test-name"}, "uid", "test", True),
+        ({"uid": "test"}, "arch", "x86_64", True),
+        ({"uid": "test"}, "arch", "aarch64", False),
+        ({"depth": "1"}, "name", "test", False),
+        ({"uid": "test", "name": "test-name"}, "menu", "testmenu0", False),
+    ],
+)
+def test_find_match_single_key(
+        cobbler_api: CobblerAPI,
+        create_distro: Callable[[], Distro],
+        data_keys: Dict[str, Any],
+        check_key: str,
+        check_value: Any,
+        expect_match: bool):
+    """
+    Assert that a single given key and value match the object or not.
+    """
+    # Arrange
+    test_distro_obj = create_distro()
+    test_distro_obj.arch = enums.Archs.X86_64
+    profile = Profile(cobbler_api)
+    profile.distro = test_distro_obj.name
+
+    # Act
+    result = profile.find_match_single_key(data_keys, check_key, check_value)
+
+    # Assert
+    assert expect_match == result
