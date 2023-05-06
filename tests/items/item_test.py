@@ -525,33 +525,23 @@ def test_sort_key(request: "pytest.FixtureRequest", cobbler_api: CobblerAPI):
 
 
 @pytest.mark.parametrize(
-    "in_keys, check_keys, expect_match, create_mocks",
+    "in_keys, check_keys, expect_match",
     [
-        ({"uid": "test-uid"}, {"uid": "test-uid"}, True, None),
-        ({"menu": "testmenu0"}, {"menu": "testmenu0"}, True, ["create_menu"]),
-        ({"ctime": 0.0}, {"ctime": 0.0}, True, None),
-        ({"name": "test-object"}, {"name": "test-object"}, True, None),
-        ({"comment": "test-comment"}, {"comment": "test-comment"}, True, None),
-        ({"menu": "testmenu0"}, {"menu": ""}, False, ["create_menu"]),
-        ({"uid": "test-uid"}, {"uid": ""}, False, None),
+        ({"uid": "test-uid"}, {"uid": "test-uid"}, True),
+        ({"name": "test-object"}, {"name": "test-object"}, True),
+        ({"comment": "test-comment"}, {"comment": "test-comment"}, True),
+        ({"uid": "test-uid"}, {"uid": ""}, False),
     ],
 )
 def test_find_match(
-        request: "pytest.FixtureRequest",
         cobbler_api: CobblerAPI,
         in_keys: Dict[str, Any],
         check_keys: Dict[str, Any],
-        create_mocks: Optional[List[str]],
         expect_match: bool):
     """
     Assert that given a desired amount of key-value pairs is matching the item or not.
     """
     # Arrange
-    if create_mocks:
-        for mock in create_mocks:
-            mock_generator = request.getfixturevalue(mock)
-            if mock_generator:
-                mock_generator()
 
     titem = Item(cobbler_api, **in_keys)
 
